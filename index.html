@@ -20,19 +20,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* Lo manda al fondo detrás de todo */
-            opacity: 0.15; /* Sutil para que no opaque el texto */
+            z-index: -1;
+            opacity: 0.15;
             pointer-events: none;
-        }
-
-        /* Animación flotante para las imágenes de Bobol */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
-            100% { transform: translateY(0px); }
-        }
-        .bobol-animado {
-            animation: float 4s ease-in-out infinite;
         }
     </style>
 </head>
@@ -83,6 +73,7 @@
             <p class="text-slate-400">Selecciona el plan ideal para impulsar tu negocio</p>
         </div>
 
+        <!-- Contenedor corregido -->
         <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <!-- Renderizado dinámico -->
         </div>
@@ -115,10 +106,10 @@
         }
 
         function drawMatrix() {
-            ctx.fillStyle = 'rgba(2, 6, 23, 0.1)'; // Color de fondo con rastro semitransparente
+            ctx.fillStyle = 'rgba(2, 6, 23, 0.1)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            ctx.fillStyle = '#22c55e'; // Color verde tecnológico tipo Matrix
+            ctx.fillStyle = '#22c55e';
             ctx.font = fontSize + 'px monospace';
 
             for (let i = 0; i < drops.length; i++) {
@@ -134,7 +125,7 @@
         setInterval(drawMatrix, 50);
 
 
-        // --- DATOS Y RENDERIZADO DE PRODUCTOS ---
+        // --- DATOS Y RENDERIZADO DE PRODUCTOS (CON SOPORTE DE VIDEO O IMAGEN) ---
         const productos = [
             {
                 categoria: "Menús Digitales HTML + QR",
@@ -142,28 +133,28 @@
                 precio: "$4,000 MXN",
                 precioAnterior: "$6,000 MXN",
                 descripcion: "Consta de 3 categorías con 5 productos cada una (10 productos totales en HTML) + QR + mensaje directo a WhatsApp. Recoge en local del cliente. Vigencia: 1 año.",
-                imagen: "Bobol naranja.jpg"[cite: 1]
+                multimedia: "bobol-naranja.mp4" // O pon "Bobol naranja.jpg" si usas imagen
             },
             {
                 categoria: "Menús Digitales HTML + QR",
                 nombre: "Pro Inicial",
                 precio: "Consultar",
                 descripcion: "5 categorías y 5 productos cada una + QR + mensaje directo a WhatsApp + Recoge en local + Entrega a domicilio y pago por transferencia. Vigencia: 1 año.",
-                imagen: "Bobol amarillo.jpg"[cite: 4]
+                multimedia: "bobol-amarillo.mp4"
             },
             {
                 categoria: "Apps Google Play",
                 nombre: "App Básica",
                 precio: "Consultar",
                 descripcion: "3 categorías y 5 productos cada una en Google Play. Opción de pago con tarjeta o efectivo y entrega a domicilio. Vigencia: 1 año.",
-                imagen: "Bobol verde.jpg"[cite: 3]
+                multimedia: "bobol-verde.mp4"
             },
             {
                 categoria: "Apps Google Play",
                 nombre: "App Premium",
                 precio: "Consultar",
                 descripcion: "Totalmente personalizada de acuerdo al negocio. Hasta 7 categorías y 35 productos totales en Google Play. Vigencia: 1 año.",
-                imagen: "Bobol rojo.jpg"[cite: 5]
+                multimedia: "bobol-rojo.mp4"
             },
             {
                 categoria: "Mantenimiento",
@@ -171,25 +162,30 @@
                 precio: "$150 MXN",
                 precioAnterior: null,
                 descripcion: "Realización de cambios y actualizaciones de acuerdo a las necesidades del cliente por evento.",
-                imagen: "Bobol gris.jpg"[cite: 2]
+                multimedia: "bobol-gris.mp4"
             },
             {
                 categoria: "Mantenimiento",
                 nombre: "Plan Mensual",
                 precio: "Consultar",
                 descripcion: "Plan mensual que incluye hasta 6 cambios a la app o menú HTML por mes (planes no acumulables).",
-                imagen: "Bobol gris.jpg"[cite: 2]
+                multimedia: "bobol-gris.mp4"
             }
         ];
 
-        const container = document.getElementById('product-column') || document.getElementById('product-container');
+        const container = document.getElementById('product-container');
 
         function renderProductos() {
             container.innerHTML = productos.map(item => `
                 <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col items-center text-center hover:border-orange-500/60 hover:shadow-orange-500/15 transition-all duration-300 backdrop-blur-sm">
-                    <!-- Imagen de Bobol con animación flotante -->
-                    <div class="w-32 h-32 mb-6 rounded-full overflow-hidden border-2 border-orange-500/40 bg-slate-950 shadow-inner flex items-center justify-center p-1 bobol-animado">
-                        <img src="${item.imagen}" alt="${item.nombre}" class="w-full h-full object-cover rounded-full">
+                    
+                    <!-- Contenedor multimedia (Video o Imagen según la extensión) -->
+                    <div class="w-32 h-32 mb-6 rounded-full overflow-hidden border-2 border-orange-500/40 bg-slate-950 shadow-inner flex items-center justify-center p-1">
+                        ${item.multimedia.endsWith('.mp4') ? `
+                            <video src="${item.multimedia}" autoplay loop muted playsinline class="w-full h-full object-cover rounded-full"></video>
+                        ` : `
+                            <img src="${item.multimedia}" alt="${item.nombre}" class="w-full h-full object-cover rounded-full">
+                        `}
                     </div>
                     
                     <span class="text-xs uppercase tracking-wider text-orange-400 font-bold mb-2 bg-orange-500/10 px-3 py-1 rounded-full border border-orange-500/20">${item.categoria}</span>
