@@ -12,12 +12,37 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        
+        /* Estilo para el fondo Matrix */
+        #matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Lo manda al fondo detrás de todo */
+            opacity: 0.15; /* Sutil para que no opaque el texto */
+            pointer-events: none;
+        }
+
+        /* Animación flotante para las imágenes de Bobol */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+        .bobol-animado {
+            animation: float 4s ease-in-out infinite;
+        }
     </style>
 </head>
-<body class="bg-slate-900 text-slate-100 antialiased selection:bg-orange-500 selection:text-white">
+<body class="bg-slate-950 text-slate-100 antialiased selection:bg-orange-500 selection:text-white relative">
+
+    <!-- Canvas para el fondo tecnológico animado tipo Matrix -->
+    <canvas id="matrix-bg"></canvas>
 
     <!-- Header / Navbar -->
-    <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-900/85 border-b border-slate-800 shadow-lg">
+    <header class="sticky top-0 z-50 backdrop-blur-md bg-slate-950/80 border-b border-slate-800 shadow-lg">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <div class="w-12 h-12 rounded-xl bg-gradient-to-tr from-orange-500 to-amber-400 flex items-center justify-center text-white font-bold shadow-md shadow-orange-500/20">
@@ -37,7 +62,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="relative py-20 overflow-hidden bg-gradient-to-b from-slate-900 to-slate-800 border-b border-slate-800">
+    <section class="relative py-20 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
             <span class="inline-block bg-orange-500/10 text-orange-400 border border-orange-500/20 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider mb-4">
                 Soluciones Tecnológicas a tu Medida
@@ -52,24 +77,64 @@
     </section>
 
     <!-- Productos & Categorías -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
         <div class="text-center mb-12">
             <h2 class="text-3xl font-bold text-white mb-2">Nuestros Productos</h2>
             <p class="text-slate-400">Selecciona el plan ideal para impulsar tu negocio</p>
         </div>
 
         <div id="product-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <!-- Los productos se cargan dinámicamente desde JavaScript -->
+            <!-- Renderizado dinámico -->
         </div>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-slate-950 border-t border-slate-800 py-8 text-center text-slate-500 text-sm">
+    <footer class="bg-slate-950/90 border-t border-slate-800/80 py-8 text-center text-slate-500 text-sm relative z-10">
         <p>&copy; 2026 Bobol Technologies. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Script de Datos y Renderizado -->
+    <!-- Scripts: Lógica de productos y animación del fondo Matrix -->
     <script>
+        // --- SCRIPT DEL FONDO TECNOLÓGICO (MATRIX) ---
+        const canvas = document.getElementById('matrix-bg');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        const characters = '01ABCDEFXYZBOBOLTECH';
+        const fontSize = 14;
+        let columns = canvas.width / fontSize;
+        let drops = [];
+        for (let i = 0; i < columns; i++) {
+            drops[i] = 1;
+        }
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(2, 6, 23, 0.1)'; // Color de fondo con rastro semitransparente
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.fillStyle = '#22c55e'; // Color verde tecnológico tipo Matrix
+            ctx.font = fontSize + 'px monospace';
+
+            for (let i = 0; i < drops.length; i++) {
+                const text = characters.charAt(Math.floor(Math.random() * characters.length));
+                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                drops[i]++;
+            }
+        }
+        setInterval(drawMatrix, 50);
+
+
+        // --- DATOS Y RENDERIZADO DE PRODUCTOS ---
         const productos = [
             {
                 categoria: "Menús Digitales HTML + QR",
@@ -77,56 +142,53 @@
                 precio: "$4,000 MXN",
                 precioAnterior: "$6,000 MXN",
                 descripcion: "Consta de 3 categorías con 5 productos cada una (10 productos totales en HTML) + QR + mensaje directo a WhatsApp. Recoge en local del cliente. Vigencia: 1 año.",
-                imagen: "Bobol naranja.jpg" //
+                imagen: "Bobol naranja.jpg"[cite: 1]
             },
             {
                 categoria: "Menús Digitales HTML + QR",
                 nombre: "Pro Inicial",
-                precio: "$6,000 MXN",
-                precioAnterior: "$8,000 MXN",
+                precio: "Consultar",
                 descripcion: "5 categorías y 5 productos cada una + QR + mensaje directo a WhatsApp + Recoge en local + Entrega a domicilio y pago por transferencia. Vigencia: 1 año.",
-                imagen: "Bobol amarillo.jpg" //
+                imagen: "Bobol amarillo.jpg"[cite: 4]
             },
             {
                 categoria: "Apps Google Play",
                 nombre: "App Básica",
-                precio: "$8,000 MXN",
-                precioAnterior: "$10,000 MXN",
+                precio: "Consultar",
                 descripcion: "3 categorías y 5 productos cada una en Google Play. Opción de pago con tarjeta o efectivo y entrega a domicilio. Vigencia: 1 año.",
-                imagen: "Bobol verde.jpg" //
+                imagen: "Bobol verde.jpg"[cite: 3]
             },
             {
                 categoria: "Apps Google Play",
                 nombre: "App Premium",
-                precio: "$16,000 MXN",
-                precioAnterior: "$18,000 MXN",
+                precio: "Consultar",
                 descripcion: "Totalmente personalizada de acuerdo al negocio. Hasta 7 categorías y 35 productos totales en Google Play. Vigencia: 1 año.",
-                imagen: "Bobol rojo.jpg" //
+                imagen: "Bobol rojo.jpg"[cite: 5]
             },
             {
                 categoria: "Mantenimiento",
                 nombre: "Cambio Individual",
                 precio: "$150 MXN",
-                precioAnterior: "$200 MXN",
+                precioAnterior: null,
                 descripcion: "Realización de cambios y actualizaciones de acuerdo a las necesidades del cliente por evento.",
-                imagen: "Bobol gris.jpg" //
+                imagen: "Bobol gris.jpg"[cite: 2]
             },
             {
                 categoria: "Mantenimiento",
                 nombre: "Plan Mensual",
-                precio: "$500 MXN",
+                precio: "Consultar",
                 descripcion: "Plan mensual que incluye hasta 6 cambios a la app o menú HTML por mes (planes no acumulables).",
-                imagen: "Bobol gris.jpg" //[cite: 2]
+                imagen: "Bobol gris.jpg"[cite: 2]
             }
         ];
 
-        const container = document.getElementById('product-container');
+        const container = document.getElementById('product-column') || document.getElementById('product-container');
 
         function renderProductos() {
             container.innerHTML = productos.map(item => `
-                <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-6 shadow-xl flex flex-col items-center text-center hover:border-orange-500/50 hover:shadow-orange-500/10 transition-all duration-300">
-                    <!-- Imagen de Bobol -->
-                    <div class="w-32 h-32 mb-6 rounded-full overflow-hidden border-2 border-orange-500/40 bg-slate-900 shadow-inner flex items-center justify-center p-1">
+                <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col items-center text-center hover:border-orange-500/60 hover:shadow-orange-500/15 transition-all duration-300 backdrop-blur-sm">
+                    <!-- Imagen de Bobol con animación flotante -->
+                    <div class="w-32 h-32 mb-6 rounded-full overflow-hidden border-2 border-orange-500/40 bg-slate-950 shadow-inner flex items-center justify-center p-1 bobol-animado">
                         <img src="${item.imagen}" alt="${item.nombre}" class="w-full h-full object-cover rounded-full">
                     </div>
                     
@@ -134,7 +196,7 @@
                     <h3 class="text-2xl font-bold text-white mb-3">${item.nombre}</h3>
                     <p class="text-slate-300 text-sm leading-relaxed mb-6 flex-grow">${item.descripcion}</p>
                     
-                    <div class="mt-auto w-full pt-4 border-t border-slate-700/60">
+                    <div class="mt-auto w-full pt-4 border-t border-slate-800">
                         <div class="text-xl font-extrabold text-emerald-400 mb-4 flex items-center justify-center gap-2">
                             ${item.precio} 
                             ${item.precioAnterior ? `<span class="text-xs text-slate-400 line-through font-normal">${item.precioAnterior}</span>` : ''}
